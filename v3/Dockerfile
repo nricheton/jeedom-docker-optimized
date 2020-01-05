@@ -29,7 +29,7 @@ RUN apt-get install --no-install-recommends -y build-essential avahi-daemon lsb-
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
 RUN apt-get install --no-install-recommends -y nodejs  
 
-RUN apt-get install --no-install-recommends -y npm  
+#RUN apt-get install --no-install-recommends -y npm  
 RUN  npm install -g npm  
 
 # Install
