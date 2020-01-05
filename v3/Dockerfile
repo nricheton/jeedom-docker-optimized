@@ -17,6 +17,17 @@ RUN apt-get install --no-install-recommends -y git python-pip python-dev python-
     make build-essential libudev-dev g++ gcc python-lxml unzip libjpeg-dev python-serial python-requests
 RUN pip install wheel urwid louie six tornado
 
+# Plugin Homebridge
+RUN apt-get install --no-install-recommends -y build-essential avahi-daemon lsb-release avahi-discover avahi-utils \
+    libnss-mdns libavahi-compat-libdnssd-dev dialog apt-utils
+    
+RUN curl -sL https://deb.nodesource.com/setup_${installVer}.x | sudo -E bash -
+RUN apt-get install --no-install-recommends -y nodejs  
+
+RUN apt-get install --no-install-recommends -y npm  
+RUN  npm install -g npm  
+
+# Install
 RUN echo "root:${SHELL_ROOT_PASSWORD}" | chpasswd && \
   sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config && \
   sed -i 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' /etc/pam.d/sshd
