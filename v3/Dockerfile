@@ -19,9 +19,9 @@ RUN pip install wheel urwid louie six tornado
 
 # Plugin Homebridge
 RUN apt-get install --no-install-recommends -y build-essential avahi-daemon lsb-release avahi-discover avahi-utils \
-    libnss-mdns libavahi-compat-libdnssd-dev dialog apt-utils
+    libnss-mdns libavahi-compat-libdnssd-dev dialog apt-utils curl
     
-RUN curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
 RUN apt-get install --no-install-recommends -y nodejs  
 
 RUN apt-get install --no-install-recommends -y npm  
