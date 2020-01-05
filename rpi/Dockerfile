@@ -20,6 +20,13 @@ RUN apt-get install --no-install-recommends -y git python-pip python-dev python-
 RUN pip install wheel urwid louie six tornado
 
 # Plugin Homebridge
+
+RUN bash -c "cat >> /etc/apt/preferences.d/nodesource" << EOL
+Package: nodejs
+Pin: origin deb.nodesource.com
+Pin-Priority: 600
+EOL
+
 RUN apt-get install --no-install-recommends -y build-essential avahi-daemon lsb-release avahi-discover avahi-utils \
     libnss-mdns libavahi-compat-libdnssd-dev dialog apt-utils curl
     
