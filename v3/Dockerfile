@@ -21,7 +21,7 @@ RUN pip install wheel urwid louie six tornado
 RUN apt-get install --no-install-recommends -y build-essential avahi-daemon lsb-release avahi-discover avahi-utils \
     libnss-mdns libavahi-compat-libdnssd-dev dialog apt-utils
     
-RUN curl -sL https://deb.nodesource.com/setup_${installVer}.x | sudo -E bash -
+RUN curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
 RUN apt-get install --no-install-recommends -y nodejs  
 
 RUN apt-get install --no-install-recommends -y npm  
