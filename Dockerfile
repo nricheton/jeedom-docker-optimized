@@ -12,11 +12,11 @@ RUN apt-get install --no-install-recommends -y default-mysql-client git
 RUN apt-get install --no-install-recommends -y iputils-ping
 
 # Plugin Z wave
-RUN apt-get install --no-install-recommends -y git python-pip python-dev python-pyudev python-setuptools python-louie \
-    make build-essential libudev-dev g++ gcc python-lxml unzip libjpeg-dev python-serial python-requests
-RUN pip install wheel urwid louie six tornado
+#RUN apt-get install --no-install-recommends -y git python-pip python-dev python-pyudev python-setuptools python-louie \
+#    make build-essential libudev-dev g++ gcc python-lxml unzip libjpeg-dev python-serial python-requests
+#RUN pip install wheel urwid louie six tornado
 
-RUN cd /tmp && git clone https://github.com/jeedom/plugin-openzwave.git && cd plugin-openzwave && git checkout master && cd resources && ./install_apt.sh
+RUN cd /tmp && git clone https://github.com/jeedom/plugin-openzwave.git && cd plugin-openzwave && git checkout master && cd resources && ./install_apt.sh && cd /tmp && rm -Rf plugin-openzwave 
 
 # Plugin Homebridge
 RUN echo "\
