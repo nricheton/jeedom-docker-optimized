@@ -16,7 +16,7 @@ RUN apt-get install --no-install-recommends -y iputils-ping
 #    make build-essential libudev-dev g++ gcc python-lxml unzip libjpeg-dev python-serial python-requests
 #RUN pip install wheel urwid louie six tornado
 
-RUN cd /tmp && git clone https://github.com/jeedom/plugin-openzwave.git && cd plugin-openzwave && git checkout master && cd resources && ./install_apt.sh && cd /tmp && rm -Rf plugin-openzwave 
+RUN cd /tmp && git clone https://github.com/jeedom/plugin-openzwave.git && cd plugin-openzwave && git checkout master && cd resources && chmod u+x ./install_apt.sh && ./install_apt.sh && cd /tmp && rm -Rf plugin-openzwave 
 
 # Plugin Homebridge
 RUN echo "\
