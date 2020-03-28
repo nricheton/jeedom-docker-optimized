@@ -23,9 +23,9 @@ Jeedom permet de nombreuses possibilités dont :
   
 ## Tags 
   
-  - latest : basé sur jeedom/jeedom:latest. En cas de nouvelle installation, installe jeedom v4
-  - 3-latest : basé sur jeedom/jeedom:latest. En cas de nouvelle installation, installe jeedom v3
-  - rpi-latest : inspiré de jeedom/jeedom:latest mais image pour architecture arm/Raspberry pi, installe jeedom v4
+  - latest : basé sur jeedom/jeedom:latest. En cas de nouvelle installation, installe jeedom v4 
+  - 3-latest : basé sur jeedom/jeedom:latest. En cas de nouvelle installation, installe jeedom v3 (Non opérationnel)
+  - rpi-latest : inspiré de jeedom/jeedom:latest mais image pour architecture arm/Raspberry pi. En cas de nouvelle installation, installe jeedom v4 (Non opérationnel)
 
 ## Utilisation 
   
