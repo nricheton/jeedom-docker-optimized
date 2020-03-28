@@ -32,10 +32,14 @@ Jeedom permet de nombreuses possibilités dont :
 ### Mysql 
 
 ```
-docker run --name jeedom-mysql -v jeedom-mysql:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=password-root-sql -e MYSQL_USER=jeedom -e MYSQL_PASSWORD=password-jeedom-sql --detach --publish 3306:3306 --restart unless-stopped mariadb:10.4
+docker run --name jeedom-mysql -v jeedom-mysql:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=password-root-sql \
+  -e MYSQL_USER=jeedom -e MYSQL_PASSWORD=password-jeedom-sql --detach --publish 3306:3306 \
+  --restart unless-stopped mariadb:10.4
 ```
 
 ### Jeedom
 ```
-docker run --name jeedom-server --restart unless-stopped --net host --volume jeedom-html:/var/www/html --env APACHE_PORT="9080" --env  SSH_PORT="9022" --env MODE_HOST="1" --env ROOT_PASSWORD="password-admin-jeedom" --device  "/dev/ttyACM1:/dev/ttyUSB0" --detach nricheton/jeedom-optimized:latest 
+docker run --name jeedom-server --restart unless-stopped --net host --volume jeedom-html:/var/www/html \
+  --env APACHE_PORT="9080" --env  SSH_PORT="9022" --env MODE_HOST="1" --env ROOT_PASSWORD="password-admin-jeedom" \
+  --device  "/dev/ttyACM1:/dev/ttyUSB0" --detach nricheton/jeedom-optimized:latest 
 ```
