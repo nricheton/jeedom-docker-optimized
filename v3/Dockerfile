@@ -35,5 +35,5 @@ RUN  npm install -g npm
 # Reduce image size
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install V3
-CMD ["/root/init.sh", "-v", "master"]
+# Install v3
+RUN sed 's/.*\/root\/install.sh -s 6.*/\/root\/install.sh -s 6 -v master/' /root/init.sh
