@@ -36,4 +36,4 @@ RUN  npm install -g npm
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install v3
-RUN sed 's/.*\/root\/install.sh -s 6.*/\/root\/install.sh -s 6 -v master/' /root/init.sh
+RUN sed -i 's/.*\/root\/install.sh -s 6.*/\/root\/install.sh -s 6 -v master/' /root/init.sh
