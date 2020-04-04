@@ -11,30 +11,6 @@ ENV MODE_HOST 0
 RUN apt-get clean && apt-get update && \
     apt-get install --no-install-recommends -y wget openssh-server supervisor default-mysql-client
 
-# Plugin Network : fix ping
-RUN apt-get install --no-install-recommends -y iputils-ping
-
-# Plugin Z wave
-RUN apt-get install --no-install-recommends -y git python-pip python-dev python-pyudev python-setuptools python-louie \
-    make build-essential libudev-dev g++ gcc python-lxml unzip libjpeg-dev python-serial python-requests
-RUN pip install wheel urwid louie six tornado
-
-# Plugin Homebridge
-
-RUN echo "\
-Package: nodejs \n\
-Pin: origin deb.nodesource.com \n\
-Pin-Priority: 600 \n" >> /etc/apt/preferences.d/nodesource
-
-RUN apt-get install --no-install-recommends -y build-essential avahi-daemon lsb-release avahi-discover avahi-utils \
-    libnss-mdns libavahi-compat-libdnssd-dev dialog apt-utils curl
-    
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
-RUN apt-get install --no-install-recommends -y nodejs  
-
-#RUN apt-get install --no-install-recommends -y npm  
-RUN  npm install -g npm  
-
 # Install
 RUN echo "root:${SHELL_ROOT_PASSWORD}" | chpasswd && \
   sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config && \
@@ -65,6 +41,31 @@ RUN wget -q https://raw.githubusercontent.com/jeedom/core/release/install/OS_spe
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
     
 CMD ["/root/init.sh"]
+
+
+## Preinstall dependencies
+RUN apt-get update && apt-get -y dist-upgrade && \
+# Mysql client & git
+    apt-get install --no-install-recommends -y default-mysql-client git && \
+# Plugin Network : fix ping
+    apt-get install --no-install-recommends -y iputils-ping && \
+# Plugin Z wave
+    mkdir -p /tmp/jeedom/openzwave/ && cd /tmp && \
+    git clone https://github.com/jeedom/plugin-openzwave.git && cd plugin-openzwave && git checkout master && cd resources && \
+    chmod u+x ./install_apt.sh && ./install_apt.sh && cd /tmp && rm -Rf plugin-openzwave \
+# Plugin Homebridge
+   echo "\
+Package: nodejs \n\
+Pin: origin deb.nodesource.com \n\
+Pin-Priority: 600 \n" >> /etc/apt/preferences.d/nodesource && \
+    apt-get install --no-install-recommends -y build-essential avahi-daemon lsb-release avahi-discover avahi-utils \
+    libnss-mdns libavahi-compat-libdnssd-dev dialog apt-utils curl && \
+    curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
+    apt-get install --no-install-recommends -y nodejs && \
+    npm install -g npm && \
+# Reduce image size
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+    
 
 # stop processing ARM emulation (comment out next line if built on Raspberry)
 RUN [ "cross-build-end" ]
