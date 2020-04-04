@@ -3,13 +3,12 @@ FROM   balenalib/armv7hf-debian:buster
 # Enable building ARM container on x86 machinery on the web (comment out next line if built on Raspberry)
 RUN [ "cross-build-start" ]
 
-ENV SHELL_ROOT_PASSWORD Jeedom123
+ENV SHELL_ROOT_PASSWORD Mjeedom96
 ENV APACHE_PORT 80
 ENV SSH_PORT 2222
 ENV MODE_HOST 0
 
-RUN apt-get clean && apt-get update && \
-    apt-get install --no-install-recommends -y wget openssh-server supervisor default-mysql-client
+RUN apt-get update && apt-get install -y wget openssh-server supervisor mysql-client
 
 # Install
 RUN echo "root:${SHELL_ROOT_PASSWORD}" | chpasswd && \
