@@ -45,15 +45,15 @@ docker run --name jeedom-server --restart unless-stopped --net host --volume jee
 ```
 
 Notes: 
-  - Il est nécessaire de faire fonctionner jeedom avec un réseau en  mode 'host' pour utiliser Homebridge / Maison sur iOS & MacOS. e protocole Bonjour nécessite de pouvoir envoyer des messages sur le réseau en broadcast.
+  - Il est nécessaire de faire fonctionner jeedom avec un réseau en  mode 'host' pour utiliser Homebridge / Maison sur iOS & MacOS. Le protocole Bonjour nécessite de pouvoir envoyer des messages sur le réseau en broadcast.
   - En mode host, on ne peut pas lier des conteneurs. Jeedom doit donc accéder à la base de données en utiliser l'IP du host docker et le port publié par le conteneur mysql.
 
 ### Installation de Jeedom
 
 Au premier lancement, jeedom va demander les nformations de la base de données. 
 
-- Database hostname : your docker host name/IP where you started the jeedom-mysql container. Cannot be 'localhost' or 127.0.0.1 since you have to connect outside of the jeedom container. 
-- Database port : jeedom-mysql published port. Default is 3306
-- Database username : jeedom (or anything provided on jeedom-mysql creation)
-- Database password : password-jeedom-sql (you should have provided a custom password on jeedom-mysql creation)
-- database name : jeedom (or anything provided on jeedom-mysql creation)
+- Database hostname : Le nom/IP de votre serveur docker. Celio ou vous avez démarré le conteneur jeedom-mysql. Ne peut pas être 'localhost' or 127.0.0.1 car vous devez vous connecter en dehors du conteneur jeedom.
+- Database port : Port publié de jeedom-mysql. Par défaut : 3306
+- Database username : jeedom (ou ce que vous avez indiqué à la création de jeedom-mysql)
+- Database password : password-jeedom-sql (vous avez dû changer le mot de passe à la création de jeedom-mysql)
+- database name : jeedom (ou ce que vous avez indiqué à la création de jeedom-mysql)
