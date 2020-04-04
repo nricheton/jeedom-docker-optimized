@@ -49,6 +49,11 @@ RUN apt-get update && apt-get -y dist-upgrade && \
 # Plugin Network : fix ping
     apt-get install --no-install-recommends -y iputils-ping && \
 # Plugin Z wave
+# RPI : pre-install build dependencies on rpi
+    apt-get install --no-install-recommends -y git python-pip python-dev python-pyudev python-setuptools python-louie \
+    make build-essential libudev-dev g++ gcc python-lxml unzip libjpeg-dev python-serial python-requests && \
+    pip install wheel urwid louie six tornado && \
+# end of RPI  
     mkdir -p /tmp/jeedom/openzwave/ && cd /tmp && \
     git clone https://github.com/jeedom/plugin-openzwave.git && cd plugin-openzwave && git checkout master && cd resources && \
     chmod u+x ./install_apt.sh && ./install_apt.sh && cd /tmp && rm -Rf plugin-openzwave \
