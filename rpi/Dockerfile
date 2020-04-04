@@ -3,6 +3,7 @@ FROM   balenalib/armv7hf-debian:buster
 # Enable building ARM container on x86 machinery on the web (comment out next line if built on Raspberry)
 RUN [ "cross-build-start" ]
 
+# Following lines are from original Docker image : https://github.com/jeedom/core/blob/release/Dockerfile
 ENV SHELL_ROOT_PASSWORD Mjeedom96
 ENV APACHE_PORT 80
 ENV SSH_PORT 2222
