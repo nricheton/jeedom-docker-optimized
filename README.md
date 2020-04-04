@@ -64,11 +64,12 @@ Au premier lancement, jeedom va demander les nformations de la base de données.
 - Exporter la base mysql (fichier.sql). Jeedom fait des backups automatiques, nous pouvez repartir de ceux-ci
 - Copier le contenu du dossier /var/www. (Fichiers et conf de jeedom)
 
-- Restorer la base sur le conteneur jeedom-mysql
+- Restorer la base sur le conteneur jeedom-mysql. Via docker
 ```
 docker exec -it jeedom-mysql bash
 mysql -u jeedom -p jeedom < backup.sql 
 ```
+Ou via un client SQL
 
 - Restorer le dossier www dans le volume jeedom-html 
 - Ajuster le fichier de configuration de jeedom pour taper sur la nouvelle base.
