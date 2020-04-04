@@ -9,6 +9,7 @@ ENV APACHE_PORT 80
 ENV SSH_PORT 2222
 ENV MODE_HOST 0
 
+# NOTE : default-mysql-client instead of mysql-client (not found on rpi build)
 RUN apt-get update && apt-get install -y wget openssh-server supervisor default-mysql-client
 
 # Install
