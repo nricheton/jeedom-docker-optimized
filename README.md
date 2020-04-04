@@ -29,7 +29,7 @@ Jeedom permet de nombreuses possibilités dont :
 
 ## Utilisation 
   
-### Mysql 
+### Conteneur Mysql 
 
 ```
 docker run --name jeedom-mysql -v jeedom-mysql:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=password-root-sql \
@@ -37,7 +37,7 @@ docker run --name jeedom-mysql -v jeedom-mysql:/var/lib/mysql -e MYSQL_ROOT_PASS
   --restart unless-stopped mariadb:10.4
 ```
 
-### Jeedom
+### Conteneur Jeedom
 ```
 docker run --name jeedom-server --restart unless-stopped --net host --volume jeedom-html:/var/www/html \
   --env APACHE_PORT="9080" --env  SSH_PORT="9022" --env MODE_HOST="1" --env ROOT_PASSWORD="password-admin-jeedom" \
@@ -45,7 +45,7 @@ docker run --name jeedom-server --restart unless-stopped --net host --volume jee
 ```
 
 Notes: 
-  - Il est nécessaire de faire fonctionner jeedom avec un réseau en  mode 'host' pour utiliser Homebridge / Maison sur iOS & MacOS. Le protocole Bonjour nécessite de pouvoir envoyer des messages sur le réseau en broadcast.
+  - Il est nécessaire de faire fonctionner jeedom avec un réseau en mode 'host' pour utiliser Homebridge / Maison sur iOS & MacOS. Le protocole Bonjour nécessite de pouvoir envoyer des messages sur le réseau en broadcast.
   - En mode host, on ne peut pas lier des conteneurs. Jeedom doit donc accéder à la base de données en utiliser l'IP du host docker et le port publié par le conteneur mysql.
 
 ### Installation de Jeedom
