@@ -59,7 +59,7 @@ Au premier lancement, jeedom va demander les nformations de la base de données.
 - database name : jeedom (ou ce que vous avez indiqué à la création de jeedom-mysql)
 
 
-### Migration depuis un jeedom existant : 
+## Migration depuis un jeedom existant : 
 
 - Exporter la base mysql (fichier.sql). Jeedom fait des backups automatiques, nous pouvez repartir de ceux-ci
 - Copier le contenu du dossier /var/www. (Fichiers et conf de jeedom)
