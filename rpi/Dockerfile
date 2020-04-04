@@ -9,7 +9,7 @@ ENV APACHE_PORT 80
 ENV SSH_PORT 2222
 ENV MODE_HOST 0
 
-RUN apt-get update && apt-get install -y wget openssh-server supervisor mysql-client
+RUN apt-get update && apt-get install -y wget openssh-server supervisor default-mysql-client
 
 # Install
 RUN echo "root:${SHELL_ROOT_PASSWORD}" | chpasswd && \
