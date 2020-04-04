@@ -35,7 +35,7 @@ Jeedom utilise 2 conteneurs : un pour la base de données et l'autre pour Jeedom
 
 ```
 docker run --name jeedom-mysql -v jeedom-mysql:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=password-root-sql \
-  -e MYSQL_USER=jeedom -e MYSQL_PASSWORD=password-jeedom-sql -e MYSQL_DATABASE jeedom --detach --publish 3306:3306 \
+  -e MYSQL_USER=jeedom -e MYSQL_PASSWORD=password-jeedom-sql -e MYSQL_DATABASE=jeedom --detach --publish 3306:3306 \
   --restart unless-stopped mariadb:10.4
 ```
 
