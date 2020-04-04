@@ -57,3 +57,18 @@ Au premier lancement, jeedom va demander les nformations de la base de données.
 - Database username : jeedom (ou ce que vous avez indiqué à la création de jeedom-mysql)
 - Database password : password-jeedom-sql (vous avez dû changer le mot de passe à la création de jeedom-mysql)
 - database name : jeedom (ou ce que vous avez indiqué à la création de jeedom-mysql)
+
+
+### Migration depuis un jeedom existant : 
+
+- Exporter la base mysql (fichier.sql). Jeedom fait des backups automatiques, nous pouvez repartir de ceux-ci
+- Copier le contenu du dossier /var/www. (Fichiers et conf de jeedom)
+
+- Restorer la base sur le conteneur jeedom-mysql
+```
+docker exec -it jeedom-mysql bash
+mysql -u jeedom -p jeedom < backup.sql 
+```
+
+- Restorer le dossier www dans le volume jeedom-html 
+- Ajuster le fichier de configuration de jeedom pour taper sur la nouvelle base.
