@@ -29,6 +29,8 @@ Jeedom permet de nombreuses possibilités dont :
 
 ## Utilisation 
   
+Jeedom utilise 2 conteneurs : un pour la base de données et l'autre pour Jeedom.
+
 ### Conteneur Mysql 
 
 ```
@@ -58,6 +60,10 @@ Au premier lancement, jeedom va demander les nformations de la base de données.
 - Database password : password-jeedom-sql (vous avez dû changer le mot de passe à la création de jeedom-mysql)
 - database name : jeedom (ou ce que vous avez indiqué à la création de jeedom-mysql)
 
+
+### Documentation complémentaire 
+
+Cette image est totalement compatible avec l'image officielle jeedom. Vous trouverez des compléments et tutos sur la  documentation d'installation officielle https://jeedom.github.io/documentation/installation/fr_FR/index
 
 ## Migration depuis un jeedom existant : 
 
