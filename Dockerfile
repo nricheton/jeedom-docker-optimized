@@ -3,30 +3,32 @@ FROM jeedom/jeedom:latest
 MAINTAINER nicolas.richeton@gmail.com
 
 ## Preinstall dependencies
-RUN apt-get update && apt-get -y dist-upgrade 
+RUN apt-get update && apt-get -y dist-upgrade \
 
 # Mysql client & git
-RUN apt-get install --no-install-recommends -y default-mysql-client git
+    apt-get install --no-install-recommends -y default-mysql-client git \
 
 # Plugin Network : fix ping
-RUN apt-get install --no-install-recommends -y iputils-ping
+    apt-get install --no-install-recommends -y iputils-ping \
 
 # Plugin Z wave
-RUN mkdir -p /tmp/jeedom/openzwave/ && cd /tmp && git clone https://github.com/jeedom/plugin-openzwave.git && cd plugin-openzwave && git checkout master && cd resources && chmod u+x ./install_apt.sh && ./install_apt.sh && cd /tmp && rm -Rf plugin-openzwave 
+    mkdir -p /tmp/jeedom/openzwave/ && cd /tmp && \
+    git clone https://github.com/jeedom/plugin-openzwave.git && cd plugin-openzwave && git checkout master && cd resources && \
+    chmod u+x ./install_apt.sh && ./install_apt.sh && cd /tmp && rm -Rf plugin-openzwave \
 
 # Plugin Homebridge
-RUN echo "\
+   echo "\
 Package: nodejs \n\
 Pin: origin deb.nodesource.com \n\
-Pin-Priority: 600 \n" >> /etc/apt/preferences.d/nodesource
+Pin-Priority: 600 \n" >> /etc/apt/preferences.d/nodesource \
 
-RUN apt-get install --no-install-recommends -y build-essential avahi-daemon lsb-release avahi-discover avahi-utils \
-    libnss-mdns libavahi-compat-libdnssd-dev dialog apt-utils curl
+    apt-get install --no-install-recommends -y build-essential avahi-daemon lsb-release avahi-discover avahi-utils \
+    libnss-mdns libavahi-compat-libdnssd-dev dialog apt-utils curl \
     
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
-RUN apt-get install --no-install-recommends -y nodejs  
+    curl -sL https://deb.nodesource.com/setup_12.x | bash - \
+    apt-get install --no-install-recommends -y nodejs \
 
-RUN  npm install -g npm  
+    npm install -g npm \
 
 # Reduce image size
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+    apt-get clean && rm -rf /var/lib/apt/lists/*
