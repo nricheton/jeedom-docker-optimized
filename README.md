@@ -44,13 +44,13 @@ docker run --name jeedom-server --restart unless-stopped --net host --volume jee
   --device  "/dev/ttyACM1:/dev/ttyUSB0" --detach nricheton/jeedom-optimized:latest 
 ```
 
-Note: 
-  - Running jeedom image in host network allows use of homebridge / Home on iOS & MacOS. This is required to broadcast Bonjour announces. 
-  - In host mode, we cannot link containers. So jeedom must connect to the database using the docker host IP and published port. 
+Notes: 
+  - Il est nécessaire de faire fonctionner jeedom avec un réseau en  mode 'host' pour utiliser Homebridge / Maison sur iOS & MacOS. e protocole Bonjour nécessite de pouvoir envoyer des messages sur le réseau en broadcast.
+  - En mode host, on ne peut pas lier des conteneurs. Jeedom doit donc accéder à la base de données en utiliser l'IP du host docker et le port publié par le conteneur mysql.
 
-### Jeedom install
+### Installation de Jeedom
 
-On first install jeedom will ask for data base credentials. 
+Au premier lancement, jeedom va demander les nformations de la base de données. 
 
 - Database hostname : your docker host name/IP where you started the jeedom-mysql container. Cannot be 'localhost' or 127.0.0.1 since you have to connect outside of the jeedom container. 
 - Database port : jeedom-mysql published port. Default is 3306
