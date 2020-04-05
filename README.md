@@ -7,6 +7,9 @@ Cette image "nricheton/jeedom-optimized" est basée sur l'image originale "jeedo
   - Zwave
   - Networks
   - Homebridge
+  - Camera
+  - FreeboxOS
+  - Veolia
 
 Cela permet d'avoir un jeedom *immédiatement opérationnel* lorsque le container est recréé, sans avoir à lancer l'installation des dépendances de chaque plugins. 
 
