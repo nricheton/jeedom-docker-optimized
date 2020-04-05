@@ -3,7 +3,7 @@ FROM jeedom/jeedom:latest
 MAINTAINER nicolas.richeton@gmail.com
 
 # Preload homebridge install script
-ADD ../plugins/homebridge/install_homebridge.sh /tmp/install_homebridge.sh
+ADD plugins/homebridge/install_homebridge.sh /tmp/install_homebridge.sh
 
 ## Preinstall dependencies
 RUN apt-get update && apt-get -y dist-upgrade && \
