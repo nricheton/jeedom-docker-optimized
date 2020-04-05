@@ -26,5 +26,11 @@ RUN apt-get update && apt-get -y dist-upgrade && \
 #    curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
 #    apt-get install --no-install-recommends -y nodejs && \
 #    npm install -g npm && \
+# Camera 
+     apt-get install --no-install-recommends -y ffmpeg libav-tools python-imaging python-pil php-gd  && \
+# Freebox OS
+     apt-get install --no-install-recommends -y  android-tools-adb netcat  && \
+# Veolia 
+     apt-get install --no-install-recommends -y php7.0-mbstring  && \
 # Reduce image size
     apt-get clean && rm -rf /var/lib/apt/lists/*
