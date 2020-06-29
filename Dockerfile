@@ -5,8 +5,8 @@ MAINTAINER nicolas.richeton@gmail.com
 # Preload homebridge install script
 ADD plugins/homebridge/install_homebridge.sh /tmp/install_homebridge.sh
 
-# Install script for Apache ports
-ADD install/apache-ports.sh /root/apache-ports.sh
+# Install script for additional setup
+ADD install/setup.sh /root/setup.sh
 
 ## Preinstall dependencies
 RUN apt-get update && apt-get -y dist-upgrade && \
@@ -39,5 +39,5 @@ RUN apt-get update && apt-get -y dist-upgrade && \
     chmod u+x ./install.sh && ./install.sh && cd /tmp && rm -Rf jeedom_playtts \
 # Reduce image size
     apt-get clean && rm -rf /var/lib/apt/lists/* && \
-#Setup apache ports
-    sed -i 's/.*service atd restart.*/service atd restart\nsource \/root\/apache-ports.sh/' /root/init.sh
+#Setup 
+    sed -i 's/.*service atd restart.*/service atd restart\n. \/root\/setup.sh/' /root/init.sh

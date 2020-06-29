@@ -6,3 +6,11 @@ else
 	echo "Listen 80" > /etc/apache2/ports.conf
 	sed -i -E "s/\<VirtualHost \*:(.*)\>/VirtualHost \*:80/" /etc/apache2/sites-enabled/000-default.conf
 fi
+
+
+
+if [ ! -z ${SOUND_CARD} ]; then
+	echo 'Setup soundcard to : '${SOUND_CARD}
+    echo "defaults.pcm.card ${SOUND_CARD}\ndefaults.ctl.card ${SOUND_CARD}" > /etc/asound.conf
+    
+fi
