@@ -32,3 +32,6 @@ RUN apt-get update && apt-get -y dist-upgrade && \
      apt-get install --no-install-recommends -y  android-tools-adb netcat  && \
 # Reduce image size
     apt-get clean && rm -rf /var/lib/apt/lists/*
+
+#Setup apache ports
+    sed -i 's/.*service atd restart.*/service atd restart\nsource \/root\/apache-ports.sh' /root/init.sh
