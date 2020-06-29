@@ -29,6 +29,14 @@ Jeedom permet de nombreuses possibilités dont :
   - **nricheton/jeedom-optimized:3-latest** : basé sur jeedom/jeedom:latest. En cas de nouvelle installation, installe Jeedom v3
   - **nricheton/jeedom-optimized:rpi-latest** : inspiré de jeedom/jeedom:latest mais image pour architecture ARM/Raspberry Pi. En cas de nouvelle installation, installe Jeedom v4
 
+## Configuration supplémentaires 
+
+En plus des variables d'environnement de l'image jeedom:latest, cette image peut utiliser les virables suivantes : 
+
+- APACHE_PORT=<port> : Permet de régler le port du server apache lors d'une utilisation en mode host networking. Cette option a disparu de l'image Jeedom officielle. 
+- SOUND_CARD=<numero> : Permet de régler la carte son par défaut, si vous utilisez une carte son USB par exemple
+- HOSTNAME=<nom> : Permet de configurer le hostname, lors d'une utilisation en mode host networking
+
 ## Utilisation 
   
 Jeedom utilise 2 conteneurs : un pour la base de données et l'autre pour Jeedom.

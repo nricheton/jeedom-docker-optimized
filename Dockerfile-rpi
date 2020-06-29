@@ -63,26 +63,19 @@ RUN apt-get update && apt-get -y dist-upgrade && \
 # end of RPI  
     mkdir -p /tmp/jeedom/openzwave/ && cd /tmp && \
     git clone https://github.com/jeedom/plugin-openzwave.git && cd plugin-openzwave && git checkout master && cd resources && \
-    chmod u+x ./install_apt.sh && ./install_apt.sh && cd /tmp && rm -Rf plugin-openzwave \
+    chmod u+x ./install_apt.sh && ./install_apt.sh && cd /tmp && rm -Rf plugin-openzwave && \
 # Plugin Homebridge
-    cd tmp && chmod u+x ./install_homebridge.sh && ./install_homebridge.sh \
-#   echo "\
-#Package: nodejs \n\
-#Pin: origin deb.nodesource.com \n\
-#Pin-Priority: 600 \n" >> /etc/apt/preferences.d/nodesource && \
-#    apt-get install --no-install-recommends -y build-essential avahi-daemon lsb-release avahi-discover avahi-utils \
-#    libnss-mdns libavahi-compat-libdnssd-dev dialog apt-utils curl && \
-#    curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
-#    apt-get install --no-install-recommends -y nodejs && \
-#    npm install -g npm && \
+    cd /tmp && chmod u+x ./install_homebridge.sh && ./install_homebridge.sh && \
 # Camera 
-     apt-get install --no-install-recommends -y ffmpeg libav-tools python-imaging python-pil php-gd  && \
+# Note: libav-tools python-imaging are deprecated
+     apt-get install --no-install-recommends -y ffmpeg python-pil php-gd  && \
 # Freebox OS
      apt-get install --no-install-recommends -y  android-tools-adb netcat  && \
 # PlayTTS
     cd /tmp && \
     git clone https://github.com/lunarok/jeedom_playtts.git && cd jeedom_playtts && git checkout master && cd resources && \
-    chmod u+x ./install.sh && ./install.sh && cd /tmp && rm -Rf jeedom_playtts \
+    sed -i 's/sudo usermod -a -G audio `whoami`/sudo usermod -a -G audio www-data/' ./install.sh && \
+    chmod u+x ./install.sh && ./install.sh && cd /tmp && rm -Rf jeedom_playtts && \
 # Reduce image size
     apt-get clean && rm -rf /var/lib/apt/lists/* && \
 #Setup 
