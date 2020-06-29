@@ -5,6 +5,9 @@ MAINTAINER nicolas.richeton@gmail.com
 # Preload homebridge install script
 ADD plugins/homebridge/install_homebridge.sh /tmp/install_homebridge.sh
 
+# Install script for Apache ports
+ADD install/apache-ports.sh /root/apache-ports.sh
+
 ## Preinstall dependencies
 RUN apt-get update && apt-get -y dist-upgrade && \
 # Mysql client & git
@@ -30,8 +33,11 @@ RUN apt-get update && apt-get -y dist-upgrade && \
      apt-get install --no-install-recommends -y ffmpeg libav-tools python-imaging python-pil php-gd  && \
 # Freebox OS
      apt-get install --no-install-recommends -y  android-tools-adb netcat  && \
+# PlayTTS
+    cd /tmp && \
+    git clone https://github.com/lunarok/jeedom_playtts.git && cd jeedom_playtts && git checkout master && cd resources && \
+    chmod u+x ./install.sh && ./install.sh && cd /tmp && rm -Rf jeedom_playtts \
 # Reduce image size
     apt-get clean && rm -rf /var/lib/apt/lists/* && \
-
 #Setup apache ports
-    sed -i 's/.*service atd restart.*/service atd restart\nsource \/root\/apache-ports.sh' /root/init.sh
+    sed -i 's/.*service atd restart.*/service atd restart\nsource \/root\/apache-ports.sh/' /root/init.sh
