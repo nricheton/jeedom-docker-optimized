@@ -10,8 +10,8 @@ ADD install/setup.sh /root/setup.sh
 
 ## Preinstall dependencies
 RUN apt-get update && apt-get -y dist-upgrade && \
-# Mysql client & git
-    apt-get install --no-install-recommends -y default-mysql-client git && \
+# Mysql client & git && dumb-init
+    apt-get install --no-install-recommends -y default-mysql-client git dumb-init && \
 # Plugin Network : fix ping
     apt-get install --no-install-recommends -y iputils-ping && \
 # Plugin Z wave
@@ -34,3 +34,5 @@ RUN apt-get update && apt-get -y dist-upgrade && \
     apt-get clean && rm -rf /var/lib/apt/lists/* && \
 #Setup 
     sed -i 's/.*service atd restart.*/service atd restart\n. \/root\/setup.sh/' /root/init.sh
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+CMD ["sh", "/root/init.sh"]
