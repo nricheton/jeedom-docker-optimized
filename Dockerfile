@@ -9,7 +9,11 @@ ADD plugins/homebridge/install_homebridge.sh /tmp/install_homebridge.sh
 ADD install/setup.sh /root/setup.sh
 
 ## Preinstall dependencies
-RUN apt-get update && apt-get -y dist-upgrade && \
+RUN export DEBIAN_FRONTEND=noninteractive && \
+# RFlink needs nodejs at least v12
+    curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -  && \
+# Update base image    
+    apt-get update && apt-get -y dist-upgrade && \
 # Mysql client & git && dumb-init
     apt-get install --no-install-recommends -y default-mysql-client git dumb-init && \
 # Plugin Network : fix ping
@@ -22,7 +26,7 @@ RUN apt-get update && apt-get -y dist-upgrade && \
     cd /tmp && chmod u+x ./install_homebridge.sh && ./install_homebridge.sh && \
 # Camera 
 # Note: libav-tools python-imaging are deprecated
-     apt-get install --no-install-recommends -y ffmpeg  python-pil php-gd  && \
+     apt-get install --no-install-recommends -y ffmpeg python-pil php-gd  && \
 # Freebox OS
      apt-get install --no-install-recommends -y  android-tools-adb netcat  && \
 # PlayTTS
@@ -30,8 +34,10 @@ RUN apt-get update && apt-get -y dist-upgrade && \
     git clone https://github.com/lunarok/jeedom_playtts.git && cd jeedom_playtts && git checkout master && cd resources && \
     sed -i 's/sudo usermod -a -G audio `whoami`/sudo usermod -a -G audio www-data/' ./install.sh && \
     chmod u+x ./install.sh && ./install.sh && cd /tmp && rm -Rf jeedom_playtts && \
+# RFlink 
+    apt-get install --no-install-recommends -y nodejs && \
 # Reduce image size
-    apt-get clean && rm -rf /var/lib/apt/lists/* && \
+    apt-get -y autoremove && apt-get clean && rm -rf /var/lib/apt/lists/* && \
 #Setup 
     sed -i 's/.*service atd restart.*/service atd restart\n. \/root\/setup.sh/' /root/init.sh
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
