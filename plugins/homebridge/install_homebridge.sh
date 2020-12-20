@@ -45,12 +45,12 @@ if [ -f /media/boot/multiboot/meson64_odroidc2.dtb.linux ]; then
     if [ "$hasRepo" -ne "0" ]; then
       echo "Désactivation de la source repo.jeedom.com !"
       toReAddRepo=1
-      silent sudo apt-add-repository -r "deb http://repo.jeedom.com/odroid/ stable main"
+      sudo apt-add-repository -r "deb http://repo.jeedom.com/odroid/ stable main"
     fi
 fi
 
 #prioritize nodesource nodejs
-try sudo bash -c "cat >> /etc/apt/preferences.d/nodesource" << EOL
+sudo bash -c "cat >> /etc/apt/preferences.d/nodesource" << EOL
 Package: nodejs
 Pin: origin deb.nodesource.com
 Pin-Priority: 600
@@ -58,7 +58,7 @@ EOL
 
 step 20 "Mise à jour APT et installation des packages nécessaires"
 try sudo apt-get update
-try sudo DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential avahi-daemon lsb-release avahi-discover avahi-utils libnss-mdns libavahi-compat-libdnssd-dev dialog apt-utils
+try sudo DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential avahi-daemon lsb-release avahi-discover avahi-utils libnss-mdns libavahi-compat-libdnssd-dev dialog apt-utils git
 
 step 30 "Vérification de la version de NodeJS installée"
 silent type nodejs
@@ -66,27 +66,40 @@ if [ $? -eq 0 ]; then actual=`nodejs -v`; fi
 echo "Version actuelle : ${actual}"
 arch=`arch`;
 
-#jeedom mini and rpi 1 2, 12 does not support arm6l
-if [[ $arch == "armv6l" ]]
-then
-  installVer='8' 	#NodeJS major version to be installed
-  minVer='8'	#min NodeJS major version to be accepted  
-fi
+#jeedom mini and rpi 1 2, NodeJS 12 does not support arm6l
+#if [[ $arch == "armv6l" ]]
+#then
+#  echo "$HR"
+#  echo "== KO == Erreur d'Installation"
+#  echo "$HR"
+#  echo "== ATTENTION Vous possédez une Jeedom mini ou Raspberry zero/1/2 (arm6l) et NodeJS 12 n'y est pas supporté, merci d'utiliser du matériel récent !!!"
+#  exit 1
+#fi
 
 #jessie as libstdc++ > 4.9 needed for nodejs 12
 lsb_release -c | grep jessie
 if [ $? -eq 0 ]
 then
-  installVer='8' 	#NodeJS major version to be installed
-  minVer='8'	#min NodeJS major version to be accepted  
+  today=$(date +%Y%m%d)
+  if [[ "$today" > "20200630" ]]; 
+  then 
+    echo "$HR"
+    echo "== KO == Erreur d'Installation"
+    echo "$HR"
+    echo "== ATTENTION Debian 8 Jessie n'est officiellement plus supportée depuis le 30 juin 2020, merci de mettre à jour votre distribution !!!"
+    exit 1
+  fi
 fi
 
 bits=$(getconf LONG_BIT)
 vers=$(lsb_release -c | grep stretch | wc -l)
-if { [ "$arch" = "i386" ] || [ "$arch" = "i686" ]; } && [ "$bits" -eq "32" ] && [ "$vers" -eq "1" ]
+if { [ "$arch" = "i386" ] || [ "$arch" = "i686" ]; } && [ "$bits" -eq "32" ]
 then 
-  installVer='8' 	#NodeJS major version to be installed
-  minVer='8'	#min NodeJS major version to be accepted  
+  echo "$HR"
+  echo "== KO == Erreur d'Installation"
+  echo "$HR"
+  echo "== ATTENTION Votre système est x86 en 32bits et NodeJS 12 n'y est pas supporté, merci de passer en 64bits !!!"
+  exit 1 
 fi
 
 testVer=$(php -r "echo version_compare('${actual}','v${minVer}','>=');")
@@ -117,31 +130,34 @@ else
   silent sudo DEBIAN_FRONTEND=noninteractive apt-get -y --purge autoremove npm
   silent sudo DEBIAN_FRONTEND=noninteractive apt-get -y --purge autoremove nodejs
   
-  echo 45 > ${PROGRESS_FILE}
-  echo "--45%"
   if [[ $arch == "armv6l" ]]
   then
-    echo "Raspberry 1, 2 ou zéro détecté, utilisation du paquet v${installVer} pour ${arch}"
-    try wget -nd -nH -nc -np -e robots=off -r -l1 --no-parent -A"node-*-linux-${arch}.tar.gz" https://nodejs.org/download/release/latest-v${installVer}.x/
-    try tar -xvf node-*-linux-${arch}.tar.gz
-    try cd node-*-linux-${arch}
-    try sudo cp -R * /usr/local/
-    try cd ..
-    silent rm -fR node-*-linux-${arch}*
+    echo "Jeedom Mini ou Raspberry 1, 2 ou zéro détecté, non supporté mais on essaye l'utilisation du paquet non-officiel v12.19.0 pour armv6l"
+    try wget https://unofficial-builds.nodejs.org/download/release/v12.19.0/node-v12.19.0-linux-armv6l.tar.gz
+    try tar -xvf node-v12.19.0-linux-armv6l.tar.gz
+    cd node-v12.19.0-linux-armv6l
+    try sudo cp -f -R * /usr/local/
+    cd ..
+    silent rm -fR node-v12.19.0-linux-armv6l*
     silent ln -s /usr/local/bin/node /usr/bin/node
     silent ln -s /usr/local/bin/node /usr/bin/nodejs
     #upgrade to recent npm
     try sudo npm install -g npm
   else
     echo "Utilisation du dépot officiel"
-    try curl -sL https://deb.nodesource.com/setup_${installVer}.x | sudo -E bash -
+    curl -sL https://deb.nodesource.com/setup_${installVer}.x | try sudo -E bash -
     try sudo DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs  
   fi
   
   silent npm config set prefix ${npmPrefix}
 
   new=`nodejs -v`;
-  echo "Version actuelle : ${new}"
+  echo "Version après install : ${new}"
+  testVerAfter=$(php -r "echo version_compare('${new}','v${minVer}','>=');")
+  if [[ $testVerAfter != "1" ]]
+  then
+    echo "Version non suffisante, relancez les dépendances"
+  fi
 fi
 
 silent type npm
@@ -151,18 +167,72 @@ if [ $? -ne 0 ]; then
   try sudo npm install -g npm
 fi
 
-step 50 "Nettoyage anciens modules"
-silent sudo npm ls -g homebridge-alexa
-if [ $? -ne 1 ]; then
-  echo "Suppression homebridge-alexa global"
-  silent sudo npm rm -g homebridge-alexa
+silent type npm
+if [ $? -eq 0 ]; then
+  npmPrefix=`npm prefix -g`
+  npmPrefixSudo=`sudo npm prefix -g`
+  npmPrefixwwwData=`sudo -u www-data npm prefix -g`
+  echo -n "[Check Prefix : $npmPrefix and sudo prefix : $npmPrefixSudo and www-data prefix : $npmPrefixwwwData : "
+  if [[ "$npmPrefixSudo" != "/usr" ]] && [[ "$npmPrefixSudo" != "/usr/local" ]]; then 
+    echo "[  KO  ]"
+    if [[ "$npmPrefixwwwData" == "/usr" ]] || [[ "$npmPrefixwwwData" == "/usr/local" ]]; then
+      step 48 "Reset prefix ($npmPrefixwwwData) pour npm `sudo whoami`"
+      sudo npm config set prefix $npmPrefixwwwData
+    else
+      if [[ "$npmPrefix" == "/usr" ]] || [[ "$npmPrefix" == "/usr/local" ]]; then
+        step 48 "Reset prefix ($npmPrefix) pour npm `sudo whoami`"
+        sudo npm config set prefix $npmPrefix
+      else
+        [ -f /usr/bin/raspi-config ] && { rpi="1"; } || { rpi="0"; }
+        if [[ "$rpi" == "1" ]]; then
+	  step 48 "Reset prefix (/usr) pour npm `sudo whoami`"
+          sudo npm config set prefix /usr
+	else
+          step 48 "Reset prefix (/usr/local) pour npm `sudo whoami`"
+          sudo npm config set prefix /usr/local
+	fi
+      fi
+    fi  
+  else
+    if [[ "$npmPrefixwwwData" == "/usr" ]] || [[ "$npmPrefixwwwData" == "/usr/local" ]]; then
+      if [[ "$npmPrefixwwwData" == "$npmPrefixSudo" ]]; then
+        echo "[  OK  ]"
+      else
+        echo "[  KO  ]"
+        step 48 "Reset prefix ($npmPrefixwwwData) pour npm `sudo whoami`"
+        sudo npm config set prefix $npmPrefixwwwData
+      fi
+    else
+      echo "[  KO  ]"
+      if [[ "$npmPrefix" == "/usr" ]] || [[ "$npmPrefix" == "/usr/local" ]]; then
+        step 48 "Reset prefix ($npmPrefix) pour npm `sudo whoami`"
+        sudo npm config set prefix $npmPrefix
+      else
+        [ -f /usr/bin/raspi-config ] && { rpi="1"; } || { rpi="0"; }
+        if [[ "$rpi" == "1" ]]; then
+	  step 48 "Reset prefix (/usr) pour npm `sudo whoami`"
+          sudo npm config set prefix /usr
+	else
+          step 48 "Reset prefix (/usr/local) pour npm `sudo whoami`"
+          sudo npm config set prefix /usr/local
+	fi
+      fi
+    fi
+  fi
 fi
-silent sudo npm ls -g homebridge
+
+step 50 "Nettoyage anciens modules"
+#sudo npm ls -g homebridge-alexa &>/dev/null
+#if [ $? -ne 1 ]; then
+#  echo "Suppression homebridge-alexa global"
+  #silent sudo npm rm -g homebridge-alexa
+#fi
+sudo npm ls -g --depth 0 2>/dev/null | grep "homebridge@" >/dev/null 
 if [ $? -ne 1 ]; then
   echo "Suppression homebridge global"
   silent sudo rm -f /usr/bin/homebridge
   silent sudo rm -f /usr/local/bin/homebridge
-  silent sudo npm rm -g homebridge-camera-ffmpeg
+  #silent sudo npm rm -g homebridge-camera-ffmpeg
   silent sudo npm rm -g homebridge-jeedom
   silent sudo npm rm -g homebridge
   silent sudo npm rm -g request
@@ -172,8 +242,8 @@ if [ $? -ne 1 ]; then
 fi
 cd ${BASEDIR};
 #remove old local modules
-silent sudo rm -rf node_modules
-silent sudo rm -f package-lock.json
+sudo rm -rf node_modules &>/dev/null
+sudo rm -f package-lock.json &>/dev/null
 
 if [ -n $2 ]; then
 	BRANCH=$2
@@ -185,7 +255,11 @@ silent sudo sed -i "/.*homebridge-jeedom.*/c\    \"homebridge-jeedom\": \"NebzHB
 #need to be sudoed because of recompil
 silent sudo mkdir node_modules
 silent sudo chown -R www-data:www-data .
-try sudo npm install --no-fund --no-package-lock --no-audit
+try sudo -E -n npm install --no-fund --no-package-lock --no-audit --unsafe-perm -g homebridge-camera-ffmpeg@latest
+try sudo -E -n npm install --no-fund --no-package-lock --no-audit --unsafe-perm -g homebridge-alexa@latest
+try sudo -E -n npm install --no-fund --no-package-lock --no-audit --unsafe-perm -g homebridge-gsh@latest
+try sudo -E -n npm install --no-fund --no-package-lock --no-audit --unsafe-perm -g homebridge-config-ui-x@latest
+try sudo -E -n npm install --no-fund --no-package-lock --no-audit --unsafe-perm
 silent sudo chown -R www-data:www-data .
 #authorize www-data to use the video device (/dev/vchiq on RPI or video accelerator)
 silent sudo usermod -aG video www-data
@@ -244,8 +318,8 @@ fi
 if [ "$toReAddRepo" -ne "0" ]; then
   echo "Réactivation de la source repo.jeedom.com qu'on avait désactivé !"
   toReAddRepo=0
+  sudo wget --quiet -O - http://repo.jeedom.com/odroid/conf/jeedom.gpg.key | silent sudo apt-key add -
   silent sudo apt-add-repository "deb http://repo.jeedom.com/odroid/ stable main"
 fi
 
 post
-
