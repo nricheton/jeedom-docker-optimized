@@ -61,9 +61,9 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get install --no-install-recommends -y iputils-ping && \
 # Plugin Z wave
 # RPI : pre-install build dependencies on rpi
-    apt-get install --no-install-recommends -y git python-pip python-dev python-pyudev python-setuptools python-louie \
+    apt-get install --no-install-recommends -y git python-pip python-dev python-pyudev python-setuptools python-louie python-lxml \
     make build-essential libudev-dev g++ gcc python-lxml unzip libjpeg-dev python-serial python-requests && \
-    pip install wheel urwid louie six tornado && \
+    pip install wheel urwid louie six tornado && python setup.py bdist_wheel && \
 # end of RPI  
     mkdir -p /tmp/jeedom/openzwave/ && cd /tmp && \
     git clone https://github.com/jeedom/plugin-openzwave.git && cd plugin-openzwave && git checkout master && cd resources && \
@@ -81,7 +81,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     sed -i 's/sudo usermod -a -G audio `whoami`/sudo usermod -a -G audio www-data/' ./install.sh && \
     chmod u+x ./install.sh && ./install.sh && cd /tmp && rm -Rf jeedom_playtts && \
 # RFlink needs nodejs at least v12
-   apt-get install --no-install-recommends -y nodejs && \
+   apt-get install --no-install-recommends -y nodejs avrdude && \
 # Reduce image size
     apt-get -y autoremove && apt-get clean && rm -rf /var/lib/apt/lists/* && \
 #Setup 
