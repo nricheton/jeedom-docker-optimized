@@ -35,7 +35,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     sed -i 's/sudo usermod -a -G audio `whoami`/sudo usermod -a -G audio www-data/' ./install.sh && \
     chmod u+x ./install.sh && ./install.sh && cd /tmp && rm -Rf jeedom_playtts && \
 # RFlink needs nodejs at least v12
-   apt-get install --no-install-recommends -y nodejs && \
+   apt-get install --no-install-recommends -y nodejs avrdude && \
 # Reduce image size
     apt-get -y autoremove && apt-get clean && rm -rf /var/lib/apt/lists/* && \
 # Install v3
