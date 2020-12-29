@@ -19,6 +19,8 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 # Plugin Network : fix ping
     apt-get install --no-install-recommends -y iputils-ping && \
 # Plugin Z wave
+# Some python setup first (install was failing)
+    apt-get install --no-install-recommends -y python-lxml && python setup.py bdist_wheel && \
     mkdir -p /tmp/jeedom/openzwave/ && cd /tmp && \
     git clone https://github.com/jeedom/plugin-openzwave.git && cd plugin-openzwave && git checkout master && cd resources && \
     chmod u+x ./install_apt.sh && ./install_apt.sh && cd /tmp && rm -Rf plugin-openzwave && \
@@ -35,7 +37,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     sed -i 's/sudo usermod -a -G audio `whoami`/sudo usermod -a -G audio www-data/' ./install.sh && \
     chmod u+x ./install.sh && ./install.sh && cd /tmp && rm -Rf jeedom_playtts && \
 # RFlink 
-    apt-get install --no-install-recommends -y nodejs && \
+    apt-get install --no-install-recommends -y nodejs avrdude && \
 # Reduce image size
     apt-get -y autoremove && apt-get clean && rm -rf /var/lib/apt/lists/* && \
 #Setup 
