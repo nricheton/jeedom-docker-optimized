@@ -63,7 +63,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 # RPI : pre-install build dependencies on rpi
     apt-get install --no-install-recommends -y git python-pip python-dev python-pyudev python-setuptools python-louie python-lxml \
     make build-essential libudev-dev g++ gcc python-lxml unzip libjpeg-dev python-serial python-requests && \
-    pip install wheel urwid louie six tornado && python setup.py bdist_wheel && \
+    pip install wheel urwid louie six tornado && \
 # end of RPI  
     mkdir -p /tmp/jeedom/openzwave/ && cd /tmp && \
     git clone https://github.com/jeedom/plugin-openzwave.git && cd plugin-openzwave && git checkout master && cd resources && \
