@@ -3,7 +3,8 @@ FROM jeedom/jeedom:V4-stable
 MAINTAINER nicolas.richeton@gmail.com
 
 # Preload homebridge install script
-ADD plugins/homebridge/install_homebridge.sh /tmp/install_homebridge.sh
+RUN mkdir -p /tmp/homebridge/resources
+ADD plugins/homebridge/install_homebridge.sh /tmp/homebridge/resources/install_homebridge.sh
 
 # Install script for additional setup
 ADD install/setup.sh /root/setup.sh
@@ -23,7 +24,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     git clone https://github.com/jeedom/plugin-openzwave.git && cd plugin-openzwave && git checkout master && cd resources && \
     chmod u+x ./install_apt.sh && ./install_apt.sh && cd /tmp && rm -Rf plugin-openzwave && \
 # Plugin Homebridge
-    cd /tmp && chmod u+x ./install_homebridge.sh && ./install_homebridge.sh && \
+    cd /tmp/homebridge/resources && chmod u+x ./install_homebridge.sh && ./install_homebridge.sh && cd /tmp \
 # Camera 
 # Note: libav-tools python-imaging are deprecated
      apt-get install --no-install-recommends -y ffmpeg python-pil php-gd  && \
@@ -36,6 +37,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     chmod u+x ./install.sh && ./install.sh && cd /tmp && rm -Rf jeedom_playtts && \
 # RFlink 
     apt-get install --no-install-recommends -y nodejs avrdude && \
+    cd /var/www && npm install && \
 # Reduce image size
     apt-get -y autoremove && apt-get clean && rm -rf /var/lib/apt/lists/* && \
 #Setup 
