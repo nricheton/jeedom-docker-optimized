@@ -70,7 +70,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     git clone https://github.com/jeedom/plugin-openzwave.git && cd plugin-openzwave && git checkout master && cd resources && \
     chmod u+x ./install_apt.sh && ./install_apt.sh && cd /tmp && rm -Rf plugin-openzwave && \
 # Plugin Homebridge
-    cd /tmp/homebridge/resources && chmod u+x ./install_homebridge.sh && ./install_homebridge.sh && cd /tmp \
+    cd /tmp/homebridge/resources && chmod u+x ./install_homebridge.sh && ./install_homebridge.sh && cd /tmp && \
 # Camera 
 # Note: libav-tools python-imaging are deprecated
      apt-get install --no-install-recommends -y ffmpeg python-pil php-gd  && \
