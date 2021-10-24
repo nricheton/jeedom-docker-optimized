@@ -1,4 +1,4 @@
-FROM jeedom/jeedom:latest
+FROM jeedom/jeedom:V4-stable
 
 MAINTAINER nicolas.richeton@gmail.com
 
@@ -10,8 +10,8 @@ ADD install/setup.sh /root/setup.sh
 
 ## Preinstall dependencies
 RUN export DEBIAN_FRONTEND=noninteractive && \
-# RFlink needs nodejs at least v12
-    curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -  && \
+# RFlink needs nodejs at least v14
+    curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -  && \
 # Update base image    
     apt-get update && apt-get -y dist-upgrade && \
 # Mysql client & git && dumb-init

@@ -32,7 +32,7 @@ Jeedom permet de nombreuses possibilités dont :
 
 ## Configuration supplémentaires 
 
-En plus des variables d'environnement de l'image jeedom:latest, cette image peut utiliser les virables suivantes : 
+En plus des variables d'environnement de l'image jeedom:latest, cette image peut utiliser les variables suivantes : 
 
 - APACHE_PORT=<port> : Permet de régler le port du server apache lors d'une utilisation en mode host networking. Cette option a disparu de l'image Jeedom officielle. 
 - SOUND_CARD=<numero> : Permet de régler la carte son par défaut, si vous utilisez une carte son USB par exemple
