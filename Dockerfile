@@ -38,7 +38,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     chmod u+x ./install.sh && ./install.sh && cd /tmp && rm -Rf jeedom_playtts && \
 # RFlink 
     apt-get install --no-install-recommends -y nodejs avrdude && \
-    cd /var/www && npm install && ln -s `which node` `which node`js && \
+    cd /var/www/html/plugins/rflink/resources/ && rm -rf node_modules && chown -R www-data node_modules && npm install && ln -s `which node` `which node`js && \
 # Reduce image size
     apt-get -y autoremove && apt-get clean && rm -rf /var/lib/apt/lists/* && \
 #Setup 
