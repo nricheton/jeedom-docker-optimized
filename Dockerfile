@@ -1,4 +1,4 @@
-FROM jeedom/jeedom:V4-stable
+FROM jeedom/jeedom:4.4
 
 MAINTAINER nicolas.richeton@gmail.com
 
