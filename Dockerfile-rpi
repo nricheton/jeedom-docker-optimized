@@ -62,7 +62,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get install --no-install-recommends -y iputils-ping && \
 # Plugin Z wave
 # RPI : pre-install build dependencies on rpi
-    apt-get install --no-install-recommends -y git python-pip python-dev python-pyudev python-setuptools python-louie python-lxml \
+    apt-get install --no-install-recommends -y git python3-pip python-dev python-pyudev python-setuptools python-louie python-lxml \
     make build-essential libudev-dev g++ gcc python-lxml unzip libjpeg-dev python-serial python-requests && \
     pip install wheel urwid louie six tornado && \
 # end of RPI  
