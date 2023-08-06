@@ -39,7 +39,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 # RFlink 
     apt-get install --no-install-recommends -y nodejs avrdude && \
 #cd /var/www && npm install && \
-    ln -s `which node` `which node`js && \
+#ln -s `which node` `which node`js && \
 # Reduce image size
     apt-get -y autoremove && apt-get clean && rm -rf /var/lib/apt/lists/* && \
 #Setup 
