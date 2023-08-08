@@ -2,6 +2,9 @@ FROM jeedom/jeedom:4.3-buster
 
 MAINTAINER nicolas.richeton@gmail.com
 
+# Remove Mariadb
+RUN apt-get remove -y mariadb-client mariadb-common mariadb-server
+
 # Preload homebridge install script
 RUN mkdir -p /tmp/homebridge/resources
 ADD plugins/homebridge/install_homebridge.sh /tmp/homebridge/resources/install_homebridge.sh
