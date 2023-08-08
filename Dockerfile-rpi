@@ -43,6 +43,9 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
     
 CMD ["/root/init.sh"]
 
+# Remove Mariadb
+RUN apt-get remove -y mariadb-client mariadb-common mariadb-server
+
 # Preload homebridge install script
 RUN mkdir -p /tmp/homebridge/resources
 ADD plugins/homebridge/install_homebridge.sh /tmp/homebridge/resources/install_homebridge.sh
@@ -53,7 +56,7 @@ ADD install/setup.sh /root/setup.sh
 ## Preinstall dependencies
 RUN export DEBIAN_FRONTEND=noninteractive && \
 # RFlink needs nodejs at least v14
-    curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -  && \
+    curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -  && \
 # Update base image    
     apt-get update && apt-get -y dist-upgrade && \
 # Mysql client & git && dumb-init
