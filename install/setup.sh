@@ -22,3 +22,7 @@ if [ ! -z ${HOSTNAME} ]; then
     echo "127.0.0.1 ${HOSTNAME}" >> /etc/hosts
     echo ":1 ${HOSTNAME}" >> /etc/hosts
 fi
+
+# Ensure RF link works with a recent node version
+cd /var/www/html/plugins/rflink/resources && npm install && chown -R www-data node_modules
+
