@@ -15,7 +15,7 @@ ADD install/setup.sh /root/setup.sh
 ## Preinstall dependencies
 RUN export DEBIAN_FRONTEND=noninteractive && \
 # RFlink needs nodejs at least v14
-    curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -  && \
+    curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -  && \
 # Update base image    
     apt-get update && apt-get -y dist-upgrade && \
 # Mysql client & git && dumb-init
