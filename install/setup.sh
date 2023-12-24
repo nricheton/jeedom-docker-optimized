@@ -26,3 +26,5 @@ fi
 # Ensure RF link works with a recent node version
 cd /var/www/html/plugins/rflink/resources && npm rebuild && npm install && chown -R www-data node_modules
 
+# Ignore error from previous command
+echo "Setup ok"
