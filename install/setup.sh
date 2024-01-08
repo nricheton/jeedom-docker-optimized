@@ -23,6 +23,9 @@ if [ ! -z ${HOSTNAME} ]; then
     echo ":1 ${HOSTNAME}" >> /etc/hosts
 fi
 
+# Remove mariadb in case some plugin adds it 
+apt-get remove -y mariadb-client mariadb-common mariadb-server
+
 # Ensure RF link works with a recent node version
 cd /var/www/html/plugins/rflink/resources && npm rebuild && npm install && chown -R www-data node_modules
 
