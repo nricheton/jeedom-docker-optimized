@@ -1,51 +1,88 @@
-FROM jeedom/jeedom:4.4
+ARG PARENT_TAG=4.4
+FROM jeedom/jeedom:${PARENT_TAG}
 
-MAINTAINER nicolas.richeton@gmail.com
+# Maintainer
+LABEL author="nicolas.richeton@gmail.com"
 
-# Remove Mariadb
-RUN apt-get remove -y mariadb-client mariadb-common mariadb-server
+# Define build arguments
+ARG REMOVE_MARIADB=false
+ARG INSTALL_HOMEBRIDGE=true
+ARG INSTALL_PLAYTTS=true
+ARG INSTALL_RFLINK=true
+ARG INSTALL_CAMERA=true
+ARG INSTALL_FREEBOX_OS=true
+ARG INSTALL_OPENZWAVE=true
+ARG INSTALL_NETWORK=true
+ARG INSTALL_ZWAVEJS=true  
 
-# Preload homebridge install script
-RUN mkdir -p /tmp/homebridge/resources
-ADD plugins/homebridge/install_homebridge.sh /tmp/homebridge/resources/install_homebridge.sh
 
-# Install script for additional setup
-ADD install/setup.sh /root/setup.sh
 
-## Preinstall dependencies
+# Preload plugin scripts and helper script
+COPY plugins /tmp/plugins
+COPY install/setup.sh /root/setup.sh
+COPY install/install_plugin.sh /usr/local/bin/install_plugin.sh
+RUN chmod +x /root/setup.sh /usr/local/bin/install_plugin.sh
+
+# Conditionally remove MariaDB
+RUN if [ "$REMOVE_MARIADB" = "true" ]; then \
+        apt-get remove -y mariadb-client mariadb-common mariadb-server; \
+        # configure setup.sh / set REMOVE_MARIADB=true
+        sed -i 's/.*REMOVE_MARIADB=false.*/REMOVE_MARIADB=true/' /root/setup.sh; \
+    fi
+
+# Base dependencies
 RUN export DEBIAN_FRONTEND=noninteractive && \
-# RFlink needs nodejs at least v14
-    curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -  && \
-# Update base image    
-    apt-get update && apt-get -y dist-upgrade && \
-# Mysql client & git && dumb-init
-    apt-get install --no-install-recommends -y default-mysql-client git dumb-init && \
-# Plugin Network : fix ping
-    apt-get install --no-install-recommends -y iputils-ping && \
-# Plugin Z wave
-    mkdir -p /tmp/jeedom/openzwave/ && cd /tmp && \
-    git clone https://github.com/jeedom/plugin-openzwave.git && cd plugin-openzwave && git checkout master && cd resources && \
-    chmod u+x ./install_apt.sh && ./install_apt.sh && cd /tmp && rm -Rf plugin-openzwave && \
-# Plugin Homebridge
-    cd /tmp/homebridge/resources && chmod u+x ./install_homebridge.sh && ./install_homebridge.sh && cd /tmp && \
-# Camera 
-# Note: libav-tools python-imaging are deprecated
-     apt-get install --no-install-recommends -y ffmpeg python-pil php-gd  && \
-# Freebox OS
-     apt-get install --no-install-recommends -y  android-tools-adb netcat  && \
-# PlayTTS
-    apt-get install --no-install-recommends -y  libsox-fmt-mp3 sox libttspico-utils mplayer mpg123 lsb-release software-properties-common && \
-    cd /tmp && \
-    git clone https://github.com/lunarok/jeedom_playtts.git && cd jeedom_playtts && git checkout master && cd resources && \
-    sed -i 's/sudo usermod -a -G audio `whoami`/sudo usermod -a -G audio www-data/' ./install.sh && \
-    chmod u+x ./install.sh && ./install.sh && cd /tmp && rm -Rf jeedom_playtts && \
-# RFlink 
-    apt-get install --no-install-recommends -y nodejs avrdude && \
-#cd /var/www && npm install && \
-#ln -s `which node` `which node`js && \
+    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get update && apt-get -y dist-upgrade && apt-get -y autoremove && \
+    apt-get install --no-install-recommends -y default-mysql-client git dumb-init
+
+# Install Homebridge
+RUN if [ "$INSTALL_HOMEBRIDGE" = "true" ]; then \
+        install_plugin.sh homebridge; \
+    fi
+
+# Install PlayTTS
+RUN if [ "$INSTALL_PLAYTTS" = "true" ]; then \
+        install_plugin.sh playtts; \
+    fi
+
+# Install RFLink
+RUN if [ "$INSTALL_RFLINK" = "true" ]; then \
+        install_plugin.sh rflink; \
+         # configure setup.sh / set INSTALL_RFLINK=true
+         sed -i 's/.*INSTALL_RFLINK=false.*/INSTALL_RFLINK=true/' /root/setup.sh; \
+    fi
+
+# Install Camera
+RUN if [ "$INSTALL_CAMERA" = "true" ]; then \
+        install_plugin.sh camera; \
+    fi
+
+# Install Freebox OS
+RUN if [ "$INSTALL_FREEBOX_OS" = "true" ]; then \
+        install_plugin.sh freebox_os; \
+    fi
+
+# Install OpenZWave
+RUN if [ "$INSTALL_OPENZWAVE" = "true" ]; then \
+        install_plugin.sh openzwave; \
+    fi
+
+# Install Network
+RUN if [ "$INSTALL_NETWORK" = "true" ]; then \
+        install_plugin.sh network; \
+    fi
+
+# Install ZWaveJS
+RUN if [ "$INSTALL_ZWAVEJS" = "true" ]; then \
+        install_plugin.sh zwavejs; \
+    fi
+
 # Reduce image size
-    apt-get -y autoremove && apt-get clean && rm -rf /var/lib/apt/lists/* && \
-#Setup 
-    sed -i 's/.*service atd restart.*/service atd restart\n. \/root\/setup.sh/' /root/init.sh
+RUN apt-get -y autoremove && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Setup script
+RUN sed -i 's/.*service atd restart.*/service atd restart.\n\/root\/setup.sh/' /root/init.sh
+
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
-CMD ["sh", "/root/init.sh"]
+CMD ["bash", "/root/init.sh"]
