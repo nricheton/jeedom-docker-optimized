@@ -2,6 +2,8 @@ FROM jeedom/jeedom:4.4-buster
 
 MAINTAINER nicolas.richeton@gmail.com
 
+RUN apt-add-repository --component non-free
+
 # Remove Mariadb
 RUN apt-get remove -y mariadb-client mariadb-common mariadb-server
 
