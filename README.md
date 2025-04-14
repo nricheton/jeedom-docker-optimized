@@ -26,9 +26,9 @@ Jeedom permet de nombreuses possibilités dont :
   
 ## Tags 
   
-  - **nricheton/jeedom-optimized:latest** : basé sur jeedom/jeedom:latest. En cas de nouvelle installation, installe Jeedom v4 
-  - **nricheton/jeedom-optimized:3-latest** : basé sur jeedom/jeedom:latest. En cas de nouvelle installation, installe Jeedom v3
-  - **nricheton/jeedom-optimized:rpi-latest** : inspiré de jeedom/jeedom:latest mais image pour architecture ARM/Raspberry Pi. En cas de nouvelle installation, installe Jeedom v4
+  - **nricheton/jeedom-optimized:latest, nricheton/jeedom-optimized:bookworm** (amd64/arm664) : basée sur jeedom/jeedom:latest 
+  - **nricheton/jeedom-optimized:bullseye** (amd64/arm664) : basée sur jeedom/jeedom:bullseye
+  - **nricheton/jeedom-optimized:buster** (amd64/arm664) : basée sur jeedom/jeedom:buster. Correspond à l'ancienne version de jeedom-optimized. Debian Buster n'est plus supportée. par Jeedom
 
 ## Configuration supplémentaires 
 
