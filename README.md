@@ -26,9 +26,9 @@ Jeedom permet de nombreuses possibilités dont :
   
 ## Tags 
   
-  - **nricheton/jeedom-optimized:latest, nricheton/jeedom-optimized:bookworm** (amd64/arm664) : basée sur jeedom/jeedom:latest 
-  - **nricheton/jeedom-optimized:bullseye** (amd64/arm664) : basée sur jeedom/jeedom:bullseye
-  - **nricheton/jeedom-optimized:buster** (amd64/arm664) : basée sur jeedom/jeedom:buster. Correspond à l'ancienne version de jeedom-optimized. Debian Buster n'est plus supportée. par Jeedom
+  - **nricheton/jeedom-optimized:latest, nricheton/jeedom-optimized:bookworm** (amd64/arm64) : basée sur jeedom/jeedom:latest 
+  - **nricheton/jeedom-optimized:bullseye** (amd64/arm64) : basée sur jeedom/jeedom:bullseye
+  - **nricheton/jeedom-optimized:buster** (amd64/arm64) : basée sur jeedom/jeedom:buster. Correspond à l'ancienne version de jeedom-optimized. Debian Buster n'est plus supportée. par Jeedom
 
 ## Configuration supplémentaires 
 
