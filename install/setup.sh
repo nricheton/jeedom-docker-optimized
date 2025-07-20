@@ -1,3 +1,5 @@
+#!/bin/bash
+
 echo "Setup at launch time (nricheton/jeedom-optimized)"
 
 if [ ! -z ${APACHE_PORT} ]; then
