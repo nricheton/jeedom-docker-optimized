@@ -15,7 +15,8 @@ fi
 
 if [ ! -z ${SOUND_CARD} ]; then
 	echo 'Setup soundcard to: '${SOUND_CARD}
-    echo "defaults.pcm.card ${SOUND_CARD}\ndefaults.ctl.card ${SOUND_CARD}" > /etc/asound.conf
+    echo "defaults.pcm.card ${SOUND_CARD}" > /etc/asound.conf
+    echo "defaults.ctl.card ${SOUND_CARD}"  >> /etc/asound.conf
     
 fi
 
