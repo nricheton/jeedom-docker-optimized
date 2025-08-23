@@ -17,7 +17,7 @@ if [ ! -z ${SOUND_CARD} ]; then
 	echo 'Setup soundcard to: '${SOUND_CARD}
     echo "defaults.pcm.card ${SOUND_CARD}" > /etc/asound.conf
     echo "defaults.ctl.card ${SOUND_CARD}"  >> /etc/asound.conf
-    
+    amixer sset 'Speaker' 100%
 fi
 
 
