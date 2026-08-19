@@ -19,6 +19,7 @@ noGSH=false
 noAlexa=false
 noCam=false
 noSupport=false
+forceCameraFfmpegV4=false
 
 while [[ "$#" -gt 0 ]]; do
 	case $1 in
@@ -29,6 +30,7 @@ while [[ "$#" -gt 0 ]]; do
 		--noAlexa) noAlexa=true ;;
 		--noCam) noCam=true ;;
   		--noSupport) noSupport=true ;;
+    		--forceCameraFfmpegV4) forceCameraFfmpegV4=true ;;
 		*) echo "Option inconnue: $1"; tryOrStop false ;;
 	esac
 	shift
@@ -49,7 +51,7 @@ try sudo DEBIAN_FRONTEND=noninteractive apt-get -o Acquire::ForceIPv4=true insta
 . ${BASEDIR}/install_nodejs.sh --firstSubStep 10 --lastSubStep 50 ${forceNodeVersion}
 
 step 60 "Nettoyage anciens modules"
-sudo npm ls -g --depth 0 2>/dev/null | grep "homebridge@" >/dev/null 
+sudo npm ls -g --depth 0 2>/dev/null | grep " homebridge@" >/dev/null 
 if [ $? -ne 1 ]; then
   echo "[Suppression homebridge global"
   silent sudo npm rm -g homebridge
@@ -66,9 +68,19 @@ silent sudo chown -R www-data:www-data .
 if [ "$noCam" = true ]; then
 	step 72 "Suppression homebridge-camera-ffmpeg si existant"
 	silent sudo -E -n npm uninstall -g homebridge-camera-ffmpeg
+ 	silent sudo -E -n npm uninstall -g @homebridge-plugins/homebridge-camera-ffmpeg
+ 	silent sudo -E -n npm uninstall -g ffmpeg-for-homebridge
 else
-	step 72 "Installation/Mise à jour de homebridge-camera-ffmpeg"
-	try sudo -E -n npm install --no-fund --no-package-lock --no-audit --unsafe-perm -g homebridge-camera-ffmpeg@latest
+ 	if [ "$forceCameraFfmpegV4" = true ]; then
+  		step 72 "Installation/Mise à jour de homebridge-camera-ffmpeg latest"
+		try sudo -E -n npm install --no-fund --no-package-lock --no-audit --unsafe-perm -g ffmpeg-for-homebridge@latest
+  		silent sudo -E -n npm uninstall -g homebridge-camera-ffmpeg
+ 		try sudo -E -n npm install --no-fund --no-package-lock --no-audit --unsafe-perm -g @homebridge-plugins/homebridge-camera-ffmpeg@latest
+   	else
+    		step 72 "Installation/Mise à jour de homebridge-camera-ffmpeg 3.1.4"
+		try sudo -E -n npm install --no-fund --no-package-lock --no-audit --unsafe-perm -g ffmpeg-for-homebridge@latest
+		try sudo -E -n npm install --no-fund --no-package-lock --no-audit --unsafe-perm -g homebridge-camera-ffmpeg@3.1.4
+    	fi 	
 fi
 if [ "$noAlexa" = true ]; then
 	step 74 "Suppression homebridge-alexa si existant"
@@ -87,14 +99,18 @@ else
 	try sudo -E -n npm install --no-fund --no-package-lock --no-audit --unsafe-perm -g homebridge-gsh@latest
 fi
 step 78 "Installation/Mise à jour de homebridge-config-ui-x"
-tryOrStop sudo -E -n npm install --no-fund --no-package-lock --no-audit --unsafe-perm -g homebridge-config-ui-x@latest
+tryOrStop sudo -E -n npm install --no-fund --no-package-lock --no-audit --unsafe-perm -g homebridge-config-ui-x@4.80.0
 
 #install homebridge
 step 80 "Installation de Homebridge"
 tryOrStop sudo -E -n npm install --no-fund --no-package-lock --no-audit --unsafe-perm
+cd node_modules/homebridge/bin
+if [ -f ./homebridge.js ]; then
+    silent sudo ln -s ./homebridge.js ./homebridge
+fi
+cd ../..
 
 step 82 "Installation de homebridge-jeedom ${BRANCH}, veuillez patienter svp"
-cd node_modules
 tryOrStop sudo -E -n git clone -b ${BRANCH} https://github.com/NebzHB/homebridge-jeedom.git
 cd homebridge-jeedom
 tryOrStop sudo -E -n npm install --no-fund --no-package-lock --no-audit --unsafe-perm

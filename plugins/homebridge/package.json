@@ -1,15 +1,14 @@
 {
-    "name": "jeedom_homebridge",
-    "version": "0.0.2",
-    "description": "Node to connect Homebridge to Jeedom",
-    "license": "GPL-3.0",
-    "repository": "npm/npm",
-    "engines": {
-       "node": ">=18.17",
-       "npm": ">=10.5.1"
-    },
-    "dependencies": {
-       "homebridge": "1.8.4"
-    }
- }
- 
+   "name": "jeedom_homebridge",
+   "version": "0.0.2",
+   "description": "Node to connect Homebridge to Jeedom",
+   "license": "GPL-3.0",
+   "repository": "npm/npm",
+   "engines": {
+      "node": ">=20",
+      "npm": ">=10.5.1"
+   },
+   "dependencies": {
+      "homebridge": "1.11.1"
+   }
+}
