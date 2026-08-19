@@ -81,6 +81,11 @@ RUN if [ "$INSTALL_ZWAVEJS" = "true" ]; then \
 # Reduce image size
 RUN apt-get -y autoremove && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# Clean up /tmp: plugin installers (openzwave, playtts, ...) clone/extract
+# directly into /tmp and are not removed by install_plugin.sh. A leftover
+# /tmp full of files makes the base image's startup chmod on /tmp very slow.
+RUN rm -rf /tmp/* /tmp/.[!.]*
+
 # Setup script
 RUN sed -i 's/.*service atd restart.*/service atd restart.\n\/root\/setup.sh/' /root/init.sh
 
