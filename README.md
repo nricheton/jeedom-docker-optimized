@@ -4,12 +4,13 @@
 
 Cette image "nricheton/jeedom-optimized" est basée sur l'image originale "jeedom/jeedom" en installant certaines dépendances de plugins : 
 
-  - Zwave
   - Networks
   - Homebridge
   - Camera
   - FreeboxOS
   - RFLink
+  - PlayTTS
+  - MQTT Manager / Z-Wave JS (Mosquitto)
 
 Cela permet d'avoir un jeedom *immédiatement opérationnel* lorsque le container est recréé, sans avoir à lancer l'installation des dépendances de chaque plugins. 
 
@@ -27,7 +28,7 @@ Jeedom permet de nombreuses possibilités dont :
 ## Tags 
   
   - **nricheton/jeedom-optimized:latest, nricheton/jeedom-optimized:bookworm** (amd64/arm64) : basée sur jeedom/jeedom:latest 
-  - **nricheton/jeedom-optimized:bullseye** (amd64/arm64) : basée sur jeedom/jeedom:bullseye
+  - **nricheton/jeedom-optimized:bullseye** (amd64/arm64) : basée sur jeedom/jeedom:bullseye. Debian Bullseye n'est plus supportée par Debian : les mises à jour de sécurité proviennent du dépôt [Freexian Extended LTS](https://www.freexian.com/lts/extended/) (désactivable au build avec `--build-arg DEBIAN_ELTS=false`)
   - **nricheton/jeedom-optimized:buster** (amd64/arm64) : basée sur jeedom/jeedom:buster. Correspond à l'ancienne version de jeedom-optimized. Debian Buster n'est plus supportée. par Jeedom
 
 ## Configuration supplémentaires 
@@ -115,7 +116,7 @@ Lors de la construction de l'image Docker, vous pouvez sélectionner les modules
 - **RFLink** : Supporte les périphériques RFLink.
 - **Camera** : Ajoute le support pour les caméras via `ffmpeg` et `php-gd`.
 - **Freebox OS** : Ajoute le support pour Freebox OS avec `android-tools-adb` et `netcat-traditional`.
-- **Z-Wave** : Installe les dépendances pour le plugin Z-Wave.
+- **MQTT Manager (mqtt2)** : Installe le broker Mosquitto local. Nécessaire pour Z-Wave JS. Non compatible avec le mode « docker » de MQTT Manager (dans ce cas, désactiver `INSTALL_MQTT2` et `INSTALL_ZWAVEJS`).
 
 ### Arguments disponibles
 
@@ -124,13 +125,15 @@ Lors de la construction de l'image Docker, vous pouvez sélectionner les modules
 - `INSTALL_RFLINK` : Installe le module RFLink (valeurs possibles : `true` ou `false`).
 - `INSTALL_CAMERA` : Installe le module Camera (valeurs possibles : `true` ou `false`).
 - `INSTALL_FREEBOX_OS` : Installe le module Freebox OS (valeurs possibles : `true` ou `false`).
-- `INSTALL_OPENZWAVE` : Installe les dépendances pour le plugin open Z-Wave (valeurs possibles : `true` ou `false`).
 - `INSTALL_NETWORK` : Installe les outils réseau (valeurs possibles : `true` ou `false`).
+- `INSTALL_MQTT2` : Installe le broker Mosquitto pour le plugin MQTT Manager (valeurs possibles : `true` ou `false`).
+- `INSTALL_ZWAVEJS` : Installe les dépendances système de Z-Wave JS, c'est-à-dire Mosquitto (valeurs possibles : `true` ou `false`).
+- `DEBIAN_ELTS` : Images bullseye uniquement, utilise le dépôt Freexian Extended LTS pour les mises à jour de sécurité (valeurs possibles : `true` ou `false`).
 - `REMOVE_MARIADB` : Supprime MariaDB du conteneur (valeurs possibles : `true` ou `false`).
 
 ### Exemple de commande de build
 
-Pour construire une image avec Homebridge, RFLink et Camera, mais sans PlayTTS, Freebox OS, Z-Wave, et en supprimant MariaDB, utilisez la commande suivante :
+Pour construire une image avec Homebridge, RFLink et Camera, mais sans PlayTTS, Freebox OS, et en supprimant MariaDB, utilisez la commande suivante :
 
 ```bash
 docker build \
@@ -139,7 +142,6 @@ docker build \
   --build-arg INSTALL_RFLINK=false \
   --build-arg INSTALL_CAMERA=true \
   --build-arg INSTALL_FREEBOX_OS=false \
-  --build-arg INSTALL_OPENZWAVE=true \
   --build-arg INSTALL_NETWORK=true \
   --build-arg REMOVE_MARIADB=true \
   -t jeedom-custom .

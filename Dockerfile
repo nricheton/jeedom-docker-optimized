@@ -11,9 +11,12 @@ ARG INSTALL_PLAYTTS=true
 ARG INSTALL_RFLINK=true
 ARG INSTALL_CAMERA=true
 ARG INSTALL_FREEBOX_OS=true
-ARG INSTALL_OPENZWAVE=true
 ARG INSTALL_NETWORK=true
-ARG INSTALL_ZWAVEJS=true  
+ARG INSTALL_MQTT2=true
+# Z-Wave JS: installs its system dependencies (mqtt2 / Mosquitto)
+ARG INSTALL_ZWAVEJS=true
+# Debian bullseye only: use Freexian Extended LTS for security updates
+ARG DEBIAN_ELTS=true
 
 
 
@@ -21,7 +24,11 @@ ARG INSTALL_ZWAVEJS=true
 COPY plugins /tmp/plugins
 COPY install/setup.sh /root/setup.sh
 COPY install/install_plugin.sh /usr/local/bin/install_plugin.sh
-RUN chmod +x /root/setup.sh /usr/local/bin/install_plugin.sh
+COPY install/debian_elts.sh /usr/local/bin/debian_elts.sh
+RUN chmod +x /root/setup.sh /usr/local/bin/install_plugin.sh /usr/local/bin/debian_elts.sh
+
+# Fix APT sources of end-of-life Debian releases (bullseye), no-op otherwise
+RUN DEBIAN_ELTS="$DEBIAN_ELTS" debian_elts.sh
 
 # Conditionally remove MariaDB
 RUN if [ "$REMOVE_MARIADB" = "true" ]; then \
@@ -63,25 +70,20 @@ RUN if [ "$INSTALL_FREEBOX_OS" = "true" ]; then \
         install_plugin.sh freebox_os; \
     fi
 
-# Install OpenZWave
-RUN if [ "$INSTALL_OPENZWAVE" = "true" ]; then \
-        install_plugin.sh openzwave; \
-    fi
-
 # Install Network
 RUN if [ "$INSTALL_NETWORK" = "true" ]; then \
         install_plugin.sh network; \
     fi
 
-# Install ZWaveJS
-RUN if [ "$INSTALL_ZWAVEJS" = "true" ]; then \
-        install_plugin.sh zwavejs; \
+# Install MQTT Manager (mqtt2), also required by Z-Wave JS
+RUN if [ "$INSTALL_MQTT2" = "true" ] || [ "$INSTALL_ZWAVEJS" = "true" ]; then \
+        install_plugin.sh mqtt2; \
     fi
 
 # Reduce image size
 RUN apt-get -y autoremove && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Clean up /tmp: plugin installers (openzwave, playtts, ...) clone/extract
+# Clean up /tmp: plugin installers (playtts, ...) clone/extract
 # directly into /tmp and are not removed by install_plugin.sh. A leftover
 # /tmp full of files makes the base image's startup chmod on /tmp very slow.
 RUN rm -rf /tmp/* /tmp/.[!.]*

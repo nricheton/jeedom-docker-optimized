@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 echo "Running additional setup for Network plugin..."
 apt-get install --no-install-recommends -y iputils-ping wakeonlan etherwake arping
