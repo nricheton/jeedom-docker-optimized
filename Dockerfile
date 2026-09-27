@@ -86,8 +86,10 @@ RUN apt-get -y autoremove && apt-get clean && rm -rf /var/lib/apt/lists/*
 # /tmp full of files makes the base image's startup chmod on /tmp very slow.
 RUN rm -rf /tmp/* /tmp/.[!.]*
 
-# Setup script
-RUN sed -i 's/.*service atd restart.*/service atd restart.\n\/root\/setup.sh/' /root/init.sh
+# Setup script, run right after atd is started.
+# atd must start: Jeedom runs plugin dependency installs with "at now".
+RUN sed -i 's/.*service atd restart.*/service atd restart\n\/root\/setup.sh/' /root/init.sh && \
+    grep -qx 'service atd restart' /root/init.sh && grep -qx '/root/setup.sh' /root/init.sh
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 CMD ["bash", "/root/init.sh"]

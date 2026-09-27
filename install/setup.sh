@@ -41,6 +41,13 @@ fi
 mkdir -p /var/www/.npm
 chown -R www-data:www-data /var/www/.npm
 
+# Mosquitto (mqtt2 "local" mode): the plugin's init script writes its pidfile
+# to /run/mosquitto, which is normally created by systemd (absent in Docker).
+if [ -x /usr/sbin/mosquitto ]; then
+	mkdir -p /run/mosquitto
+	chown mosquitto:mosquitto /run/mosquitto
+fi
+
 # RFLink serialport fix (installed only when the image includes RFLink).
 # Jeedom starts the daemon itself later, so don't restart it here.
 if [ -x /usr/local/bin/rflink_fix.sh ]; then
