@@ -35,26 +35,16 @@ if [ ${REMOVE_MARIADB} = true ]; then
   apt-get remove -y mariadb-client mariadb-common mariadb-server
 fi
 
-INSTALL_RFLINK=false
-if [ ${INSTALL_RFLINK} = true ]; then
-	cd /var/www/html/plugins/rflink/resources
+# npm runs as www-data (HOME=/var/www) in plugin installers and daemons, but
+# /var/www is root:root 775, so www-data cannot create its cache there. Root
+# (or sudo) npm runs can also leave root-owned files in it (EACCES).
+mkdir -p /var/www/.npm
+chown -R www-data:www-data /var/www/.npm
 
-	# The rflink plugin may declare an old serialport version that doesn't
-	# work with recent node versions. Bump it in package.json before
-	# installing, but never downgrade a version the plugin already declares.
-	MIN_SERIALPORT_VERSION="13.0.5"
-	MIN_BINDINGS_CPP_VERSION="12.0.0"
-	CURRENT_SERIALPORT_VERSION=$(node -p "require('./package.json').dependencies.serialport" 2>/dev/null | sed -E 's/^[^0-9]*//')
-	if [ -n "${CURRENT_SERIALPORT_VERSION}" ]; then
-		OLDEST=$(printf '%s\n' "${MIN_SERIALPORT_VERSION}" "${CURRENT_SERIALPORT_VERSION}" | sort -V | head -n1)
-		if [ "${OLDEST}" = "${CURRENT_SERIALPORT_VERSION}" ] && [ "${CURRENT_SERIALPORT_VERSION}" != "${MIN_SERIALPORT_VERSION}" ]; then
-			echo "rflink: declared serialport ${CURRENT_SERIALPORT_VERSION} is older than ${MIN_SERIALPORT_VERSION}, bumping"
-			npm pkg set "dependencies.serialport=${MIN_SERIALPORT_VERSION}" "dependencies.@serialport/bindings-cpp=${MIN_BINDINGS_CPP_VERSION}"
-		fi
-	fi
-
-	# Ensure RF link works with a recent node version
-	npm rebuild && npm install && chown -R www-data node_modules
+# RFLink serialport fix (installed only when the image includes RFLink).
+# Jeedom starts the daemon itself later, so don't restart it here.
+if [ -x /usr/local/bin/rflink_fix.sh ]; then
+	/usr/local/bin/rflink_fix.sh --no-restart
 fi
 
 # Ignore error from previous command

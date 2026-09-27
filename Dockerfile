@@ -56,8 +56,6 @@ RUN if [ "$INSTALL_PLAYTTS" = "true" ]; then \
 # Install RFLink
 RUN if [ "$INSTALL_RFLINK" = "true" ]; then \
         install_plugin.sh rflink; \
-         # configure setup.sh / set INSTALL_RFLINK=true
-         sed -i 's/.*INSTALL_RFLINK=false.*/INSTALL_RFLINK=true/' /root/setup.sh; \
     fi
 
 # Install Camera
