@@ -39,7 +39,7 @@ RUN if [ "$REMOVE_MARIADB" = "true" ]; then \
 
 # Base dependencies
 RUN export DEBIAN_FRONTEND=noninteractive && \
-    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    curl -fsSL https://deb.nodesource.com/setup_24.x | bash - && \
     apt-get update && apt-get -y dist-upgrade && apt-get -y autoremove && \
     apt-get install --no-install-recommends -y default-mysql-client git dumb-init
 
